@@ -28,6 +28,7 @@ SimilarLetterGroup = [{'\u0DD0', '\u0DD1'},  # ැ , ෑ replacement
                       {'අ', 'ආ', 'ඇ', 'ඈ'},
                       {'ඉ', 'ඊ', 'යි'},
                       {'උ', 'ඌ'},
+                      {'එ','ඇ'},
                       {'එ', 'ඒ'},
                       {'ඔ', 'ඕ'},
                       {'ක', 'ඛ'},
@@ -79,17 +80,17 @@ def GeneratePermutationsByReplacing(word):
 def hasNumbers(inputString):
     return bool(re.search(r'\d', inputString))
 
-def GeneratePermutationsUsingEditDistance(word):
-    for uniqueword in UniqueWordListInCorpus:
+def GeneratePermutationsUsingEditDistance(word,uniqueWordListInCorpus):
+    for uniqueword in uniqueWordListInCorpus:
         if not hasNumbers(uniqueword):
             distance = nltk.edit_distance(uniqueword, word)
             if len(word) > 2 and distance <= sqrt(len(word)):
                 PermutationList.append(uniqueword)
 
-def getPermutationsList(word):
+def getPermutationsList(word,uniqueWordListInCorpus):
     PermutationList.clear()
     GeneratePermutationsByReplacing(word)
-    GeneratePermutationsUsingEditDistance(word)
+    GeneratePermutationsUsingEditDistance(word,uniqueWordListInCorpus)
     return PermutationList
 
 
@@ -105,8 +106,8 @@ if __name__ == '__main__':
     for word in UniqueWordListInTest:
         PermutationList = []
         if word not in UniqueWordListInCorpus:
-            GeneratePermutationsByReplacing(word)
-            GeneratePermutationsUsingEditDistance(word)
+            #GeneratePermutationsByReplacing(word)
+            GeneratePermutationsUsingEditDistance(word,UniqueWordListInCorpus)
             PermutationListCopy = PermutationList.copy()
             PermutationDic[word] = PermutationListCopy
         else:

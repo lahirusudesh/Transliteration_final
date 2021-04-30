@@ -155,7 +155,7 @@ if __name__ == '__main__':
         file1.close()
 
     UniqueWordList = Preprocess(text)
-    TrigramModel = TrainNGramModel()
+    TrigramModel = TrainNGramModelForWords()
     pad_sent = Padsent()
     for word in UniqueWordList:
         PermutationList = []

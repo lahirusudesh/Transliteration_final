@@ -59,7 +59,7 @@ prepo_alt_word = []
 prepo_sin_word = []
 
 def loadEnglishWordList():
-    with open("../english.txt","r",encoding='utf-8', errors='ignore') as f_en:
+    with open("english_words_in_corpus.txt","r",encoding='utf-8', errors='ignore') as f_en:
         english_words = json.load(f_en)
         return english_words
 

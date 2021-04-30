@@ -146,42 +146,46 @@ def SetUpUnigramModel():
     unigram_counter_model = NgramCounter(text_unigrams)
     return unigram_counter_model
 
-def SelectBestSuggestion(unigram_model,Bigram_counter_model,Trigram_counter_model,word):
+def selectBestSuggestionUsingLetters(unigram_model,Bigram_counter_model,Trigram_counter_model,permutationList,word):
     highestUnigramFrequency = 0
     bestWord = word
-    #Unigram count
-    for w in PermutationList:
-        wordUnigramFrequency = unigram_model[w]
-        if (wordUnigramFrequency > highestUnigramFrequency):
-            highestUnigramFrequency = wordUnigramFrequency
-            bestWord = w
-    #trigram count
-    if bestWord == word:
-        HighestTrigramScore = 0
-        for w in PermutationList:
-            ThreeSyllableChunks = []
-            if len(w) > TrigramN:
-                ThreeSyllableChunks = DivideTokenIntoNSyllableChunks(w,TrigramN)
-                WordTrigramScore = 0
-                for ThreeSyllableChunk in ThreeSyllableChunks:
-                    WordTrigramScore += GetTrigramCount(ThreeSyllableChunk,Trigram_counter_model)
-                if WordTrigramScore > HighestTrigramScore:
-                    HighestTrigramScore = WordTrigramScore
-                    bestWord = w
-    # bigram count
-    if bestWord == word:
-        HighestBigramScore = 0
-        for w in PermutationList:
-            TwoSyllableChunks = []
-            if len(w) > BigramN:
-                TwoSyllableChunks = DivideTokenIntoNSyllableChunks(w, BigramN)
-                WordBigramScore = 0
-                for TwoSyllableChunk in TwoSyllableChunks:
-                    WordBigramScore += GetBigramCount(TwoSyllableChunk,Bigram_counter_model)
-                if WordBigramScore > HighestBigramScore:
-                    HighestBigramScore = WordBigramScore
-                    bestWord = w
-    return bestWord
+    if len(permutationList) > 1 :
+        #Unigram count
+        for w in permutationList:
+            wordUnigramFrequency = unigram_model[w]
+            if (wordUnigramFrequency > highestUnigramFrequency):
+                highestUnigramFrequency = wordUnigramFrequency
+                bestWord = w
+        #trigram count
+        if bestWord == word:
+            HighestTrigramScore = 0
+            for w in PermutationList:
+                ThreeSyllableChunks = []
+                if len(w) > TrigramN:
+                    ThreeSyllableChunks = DivideTokenIntoNSyllableChunks(w,TrigramN)
+                    WordTrigramScore = 0
+                    for ThreeSyllableChunk in ThreeSyllableChunks:
+                        WordTrigramScore += GetTrigramCount(ThreeSyllableChunk,Trigram_counter_model)
+                    if WordTrigramScore > HighestTrigramScore:
+                        HighestTrigramScore = WordTrigramScore
+                        bestWord = w
+        # bigram count
+        if bestWord == word:
+            HighestBigramScore = 0
+            for w in PermutationList:
+                TwoSyllableChunks = []
+                if len(w) > BigramN:
+                    TwoSyllableChunks = DivideTokenIntoNSyllableChunks(w, BigramN)
+                    WordBigramScore = 0
+                    for TwoSyllableChunk in TwoSyllableChunks:
+                        WordBigramScore += GetBigramCount(TwoSyllableChunk,Bigram_counter_model)
+                    if WordBigramScore > HighestBigramScore:
+                        HighestBigramScore = WordBigramScore
+                        bestWord = w
+        return bestWord
+    else:
+        return word
+
 def GenarateThreeSyllableChunks():
     a_file = open('threeSyllable.txt', 'r', encoding='utf-8', errors='ignore')
     x = a_file.read()
@@ -213,7 +217,7 @@ if __name__ == '__main__':
         else:
             PermutationList.append(word)
         print(PermutationList)
-        BestSuggestion = SelectBestSuggestion(Unigram_counter_model,Bigram_counter_model,Trigram_counter_model,word)
+        BestSuggestion = selectBestSuggestionUsingLetters(Unigram_counter_model,Bigram_counter_model,Trigram_counter_model,PermutationList,word)
         text = text.replace(word,BestSuggestion)
     print(text)
     with open('myfile.txt', 'w', encoding='utf-8', errors='ignore') as f_out:
